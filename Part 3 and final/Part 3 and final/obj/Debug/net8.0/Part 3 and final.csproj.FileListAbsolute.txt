@@ -1,0 +1,14 @@
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.AssemblyInfoInputs.cache
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.AssemblyInfo.cs
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.csproj.CoreCompileInputs.cache
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\bin\Debug\net8.0\Part 3 and final.exe
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\bin\Debug\net8.0\Part 3 and final.deps.json
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\bin\Debug\net8.0\Part 3 and final.runtimeconfig.json
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\bin\Debug\net8.0\Part 3 and final.dll
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\bin\Debug\net8.0\Part 3 and final.pdb
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.dll
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\refint\Part 3 and final.dll
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.pdb
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\Part 3 and final.genruntimeconfig.cache
+C:\Users\Ricky\codingWorkspace\StreamCodeRepo\Part 3 and final\Part 3 and final\obj\Debug\net8.0\ref\Part 3 and final.dll
