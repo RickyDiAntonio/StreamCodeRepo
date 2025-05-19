@@ -14,9 +14,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\Part 3 and final\\Part 3 and final\\Part 3 and final.csproj",
-      "projectName": "Part 3 and final",
-      "projectPath": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\Part 3 and final\\Part 3 and final\\Part 3 and final.csproj",
+      "projectUniqueName": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\Part 3 and final\\Part 3 and final\\Final project.csproj",
+      "projectName": "Final project",
+      "projectPath": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\Part 3 and final\\Part 3 and final\\Final project.csproj",
       "packagesPath": "C:\\Users\\Ricky\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\Part 3 and final\\Part 3 and final\\obj\\",
       "projectStyle": "PackageReference",

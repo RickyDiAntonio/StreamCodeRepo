@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "ConsoleApp2\\part 3.cs",
               "ToolTip": "C:\\Users\\Ricky\\codingWorkspace\\StreamCodeRepo\\ConsoleApp2\\ConsoleApp2\\part 3.cs",
               "RelativeToolTip": "ConsoleApp2\\part 3.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAADwv2EAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-13T16:16:51.181Z",
               "EditorCaption": ""
@@ -63,8 +63,7 @@
               "RelativeToolTip": "ConsoleApp2\\Fountain.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-12T16:47:38.658Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-12T16:47:38.658Z"
             },
             {
               "$type": "Document",
@@ -76,8 +75,7 @@
               "RelativeToolTip": "ConsoleApp2\\ManticoreHunt.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-12T16:47:02.455Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-12T16:47:02.455Z"
             },
             {
               "$type": "Document",
@@ -89,8 +87,7 @@
               "RelativeToolTip": "ConsoleApp2\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-12T16:46:57.633Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-12T16:46:57.633Z"
             },
             {
               "$type": "Document",
@@ -102,8 +99,7 @@
               "RelativeToolTip": "ConsoleApp2\\tic_tac_toeBoss.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-08T16:54:20.677Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-08T16:54:20.677Z"
             },
             {
               "$type": "Document",
@@ -115,8 +111,7 @@
               "RelativeToolTip": "ConsoleApp2\\Part2.cs",
               "ViewState": "AgIAAIgCAAAAAAAAAAAvwJYCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T16:05:07.93Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-07T16:05:07.93Z"
             }
           ]
         }
