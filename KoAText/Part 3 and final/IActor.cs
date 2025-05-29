@@ -13,10 +13,11 @@ namespace Part_3_and_final
         void SetHP(int value);
         void TakeEffectType(EffectTypes effectType,int amount);
         void TakeDamage(int amount);
-        void TurnStart(Vitals vitals);
+        void TurnStart();
         void TakeTurn(Player player,List<Monster> monsters);
         Vitals GetVitals();
         bool isAlive();
+        string GetName();
 
 
     }

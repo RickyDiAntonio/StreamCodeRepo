@@ -37,58 +37,43 @@ namespace Part_3_and_final
         //AbilitiesByLevel.Where(ability => ability.level =< characterLevel)
         public List<Ability> getAbilitiesByLevel(int level)
         {
-            AbilitiesByLevel.Where(ability => ability.reqLevel <= level);
+            AbilitiesByLevel.Where(ability => ability.baseDamage <= level);
             return AbilitiesByLevel;
         }
-
+        public virtual void ApplyLevelUpGrowth(Vitals vitals)
+        {
+            vitals.BaseHP += 10;
+            vitals.BaseAttack += 2;
+            vitals.BaseDefense += 2;
+            vitals.BaseMagicAttack += 2;
+            vitals.BaseMagicDefense += 2;
+            vitals.BaseMana += 10;
+        }
     }
    
     public class Sorcery:DestinyBase {
 
         // public DestinyBase(string Name,int HP,int Att, int Def,int magicatt,int magicDef, int sp, int mana)
-        public Sorcery() : base("Sorcery", 80,5,5,12,15,8,200) {
+        public Sorcery() : base("Sorcery", 80,5,5,5,15,15,200) {
             AbilitiesByLevel.Add(AbilityFactory.CreateAbility(AbilityNames.stormbolt));
             AbilitiesByLevel.Add(AbilityFactory.CreateAbility(AbilityNames.healingSurge));
-            AbilitiesByLevel.Add(AbilityFactory.CreateAbility(AbilityNames.flameMark));
-            
+            AbilitiesByLevel.Add(AbilityFactory.CreateAbility(AbilityNames.flameMark));            
         }
-
-
-     
-
-
-        //private  Ability SpecialMove1()
-        //{
-        //    string text = "hurls a bolt of arcane energy ";
-        //    Ability specialdestinyMove1 =new Ability("storm bolt", EffectTypes.damage, text,1);
-        //    return specialdestinyMove1 ;  
-        //}
-        //private Ability SpecialMove2()
-        //{
-        //    string text =" lets loose a fireball ";
-        //    Ability specialdestinyMove1 = new Ability("fire ball", EffectTypes.damage, text,2);
-        //    return specialdestinyMove1;
-        //}
-
-
-
+        public override void ApplyLevelUpGrowth(Vitals vitals)
+        {
+            base.ApplyLevelUpGrowth(vitals);
+            vitals.BaseMagicAttack += 10;
+            vitals.BaseMagicDefense += 10;
+            vitals.BaseMana += 50;
+        }
     }
 
     public class Might : DestinyBase
     {
-        public Might() : base("Might", 120, 8, 20,5,5, 12, 50) { }
-
-        //public override void SpecialMove1(string PlayerName)
-        //{
-        //    Console.WriteLine($"{PlayerName} performs a brutal strike");
-        //}
+        public Might() : base("Might", 120, 8, 20,5,5, 12, 50) { }              
     }
     public class Finesse : DestinyBase
     {
-        public Finesse() : base("Finesse", 100, 12, 10,8,8, 10, 100) { }
-        //public override void SpecialMove1(string PlayerName)
-        //{
-        //    Console.WriteLine($"{PlayerName} attacks with assassins arts.");
-        //}
+        public Finesse() : base("Finesse", 100, 12, 10,8,8, 10, 100) { }       
     }
 }

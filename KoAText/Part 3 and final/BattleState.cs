@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Part_3_and_final.Monsters;
+using static Part_3_and_final.Constants;
 
 namespace Part_3_and_final
 {
@@ -13,6 +14,7 @@ namespace Part_3_and_final
         private Player _player;
         private List<Monster>? _monsters;
         private Queue<IActor> _turnQueue;
+        private bool _battleOver = false;
 
         public BattleState(Player player, List<Monster> monsters)
         {
@@ -28,43 +30,91 @@ namespace Part_3_and_final
             var actors= new List<IActor>() { _player };
             if(_monsters ==null) throw new ArgumentNullException(nameof(_monsters));           
             actors.AddRange(_monsters.Where(m => m.Vitals.CurrentHP > 0));
-            var sorted = actors.OrderByDescending(a => a.GetVitals().CurrentSpeed);
-            foreach (var actor in actors)
+
+            var sorted = actors.OrderByDescending(a => a.GetVitals().CurrentSpeed).ToList();
+            _turnQueue.Clear();
+            foreach (var actor in sorted)
             {
                 _turnQueue.Enqueue(actor);
             }
-            return actors;
+            return sorted;
 
         }
         //startbattle
         public void StartBattle()
         {
+            DisplayStatus();
             if (_monsters == null) throw new ArgumentNullException(nameof(_monsters));
-            while (_player.isAlive() && _monsters.Any(m => m.isAlive()))
+            while (!_battleOver)
             {
-                var turnOrder = InitializeTurnOrder();
-
-                foreach (var actor in turnOrder)
+                if (_turnQueue.Count == 0)
                 {
-                    if (!actor.isAlive()) continue;
-                        HandleDotEffects(actor);
-                    if(!actor.isAlive()) continue;
-                    if (actor is Player)
-                    {
-                      actor.TakeTurn(_player, _monsters);
-                    }
-                }
-                    
+                    InitializeTurnOrder(); // Only refill the queue when it's empty
+                    DisplayQuickStatus();
 
+
+                }
+
+                var currentActor = _turnQueue.Dequeue();
+
+                if (!currentActor.isAlive()) continue;
+
+                currentActor.TurnStart();
+
+                if (!currentActor.isAlive()) continue;
+
+                currentActor.TakeTurn(_player, _monsters);
+                
+                CheckBattleEnd();
             }
         }
-
-        public void TakeTurn(IActor actor) {
-        
-          
+        private void CheckBattleEnd()
+        {
+            if (!_player.isAlive())
+            {
+                _battleOver = true;
+                Scribe.WriteLineColor("You have been defeated....", ConsoleColor.Red);
+            }
+            if (_monsters != null && !_monsters.Any(m => m.isAlive()))
+            {
+                _battleOver = true;
+                Scribe.WriteLineColor("You defeated all foes!", ConsoleColor.Cyan);
+            }
         }
-        //handle DOT effects/buffs
-        public void HandleDotEffects(IActor actor) { }
+        private void DisplayStatus()
+        {
+            string turnText = $"----BattleStats----";
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (turnText.Length / 2)) + "}", turnText));
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+            _player.DisplayHP();
+            
+            if(_monsters != null)
+            foreach (var m in _monsters)
+            {
+                    m.DisplayHP();
+            }
+            Console.WriteLine();
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+
+        }
+        private void DisplayQuickStatus()
+        {
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+
+            _player.DisplayHP();
+            if (_monsters != null)
+                foreach (var m in _monsters)
+                {
+                    m.DisplayHP();
+                }
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
+
+        }
+
+
+
         //choosing targets
         //ending battle
     }

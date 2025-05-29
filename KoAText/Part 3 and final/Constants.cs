@@ -8,6 +8,7 @@ namespace Part_3_and_final
 {
     public static class Constants
     {
+        public static readonly Random rand = new Random();
         public static class asciiDrawing
         {
             public const string line =
@@ -53,6 +54,58 @@ namespace Part_3_and_final
                 @" |___| " + "\n" +
                 @"       ";
         }
+        public static class asciiMonsters
+        {
+           public const string babyDragon = 
+                @"      `oo.'" + "\n" +
+                @"  ,.  `-')" + "\n" +
+                @" '^\`-' '" + "\n" +
+                @"    c-L'-";
+            public const string MageArt =
+     @"    /^\" + "\n" +
+     @"   (o o)" + "\n" +
+     @"  /  V  \" + "\n" +
+     @" /(  _  )\" + "\n" +
+     @"   ^^ ^^";
+            public const string goblin =
+        @"        //        " + "\n" +
+        @"        ││<>      " + "\n" +
+        @"/‾‾‾\╭──╯╰──╮     " + "\n" +
+        @"\___/│ o  O │/‾‾‾\" + "\n" +
+        @"     │╭════╮│\___/" + "\n" +
+        @"     ╰╰════╯╯     ";
+            public const string electricMonster =
+        @"     ₒ   ₒ       " + "\n" +
+        @"    __╲_╱__      " + "\n" +
+        @"   ╱▬▬ⱺ♦ⱺ▬▬╲     " + "\n" +
+        @"╭─wwww/┅\wwww─╮  " + "\n" +
+        @"├~~╮  ╷▄╷  ╭~~┤  " + "\n" +
+        @"┝▬▬┽ww┤█├ww┾▬▬┥  " + "\n" +
+        @"╰╰╰│▀▀ █ ▀▀│╯╯╯ ₒ" + "\n" +
+        @"   ╰┬─┬▀┬─┬╯━─━─╯" + "\n" +
+        @"    ╰┅╯ ╰┅╯      ";
+
+            public const string wolf =              
+    @"                    / V\" + "\n" +
+    @"                  / `  /" + "\n" +
+    @"                 <<   |" + "\n" +
+    @"                 /    |" + "\n" +
+    @"               /      |" + "\n" +
+    @"             /        |" + "\n" +
+    @"           /    \  \ /" + "\n" +
+    @"          (      ) | |" + "\n" +
+    @"  ________|   _/_  | |" + "\n" +
+    @"<__________\______)\__)";
+            public const string bat =
+    @" /\                 /\" + "\n" +
+    @"/ \'._   (\_/)   _.'/ \" + "\n" +
+    @"|.''._'--(o.o)--'_.''.|" + "\n" +
+    @" \_ / `;=/ "" \=;` \ _/" + "\n" +
+    @"   `\__| \___/ |__/`" + "\n" +
+    @"        \(_|_)/" + "\n" +
+    @"         "" ` """;
+        }
+       
         public static class Destinies
         {
             public const string Might = "Might";
@@ -84,6 +137,13 @@ namespace Part_3_and_final
                 Console.Write(message);
                 Console.ResetColor();
             }
+            public static void WriteRight(string message) => Console.WriteLine(message.PadLeft(Console.WindowWidth));
+            public static void WriteRightColor(string message, ConsoleColor color)
+            {
+                Console.ForegroundColor = color;
+                Scribe.WriteRight(message);
+                Console.ResetColor();
+            } 
             public static void BasicTownRow(params string[] buildings)
             {
                 //split the buildings rows up and put them in array
@@ -105,15 +165,16 @@ namespace Part_3_and_final
 
         }
         //global-ish enums and console?
-       
+        
 
 
 
     }
+
     public enum WeaponTypes { longsword,greatsword,hammer,daggers,longbow,faeBlades,staff,chakrams,sceptre}
     public enum Stats { hp, att, def,magAtt,magDef, spd, mp }
     public enum MonsterTypes { goblin, wolf }
-    public enum EffectTypes { damage,heal,DoT,shield, onHit }
-    public enum AbilityNames { stormbolt,basicAttack,sphereOfProtection,flameMark, flameMarkDoT,healingSurge }
+    public enum EffectTypes { damage,heal,DoT,shield,onHit,statChangeSpeed,physical,magic,fire,water,earth,air }
+    public enum AbilityNames { stormbolt,basicAttack,sphereOfProtection,flameMark, flameMarkDoT,healingSurge,rend }
     public enum TownBuildingTypes { inn, shop,smith,tavern,apothicary }
 }

@@ -13,9 +13,10 @@ namespace Part_3_and_final.Monsters
         public string Name {  get; set; }
         public string Description { get; set; }
         public Vitals Vitals { get; private set; }
-        public string basicAttackText = "";
         public List<Ability> Abilities { get; private set; } = new List<Ability>();
-        
+        public string monsterArt = "TBD";
+        public string basicAttackText;
+
 
         public Monster(string name,string description, Vitals vitals)
         {
@@ -28,8 +29,13 @@ namespace Part_3_and_final.Monsters
         {
             return this.Vitals;
         }
+        public string GetName()
+        {
+            return Name;
+        }
         public bool isAlive()
         {
+            //would like to remove the zero stat kill for monsters later
             if (this.GetVitals().CheckForZeroStats(this.GetVitals()) || Vitals.CurrentHP <= 0)
             {
                 return false;
@@ -47,7 +53,7 @@ namespace Part_3_and_final.Monsters
             {
                 case EffectTypes.damage:
                     Vitals.ModifyCurrentHP(-amount);
-                    Console.WriteLine($"{Name} took {amount} damage, current HP: {Vitals.CurrentHP}/{Vitals.BaseHP}");
+                    Scribe.WriteLineColor(($"{Name} took {amount} damage, current HP: {Vitals.CurrentHP}/{Vitals.BaseHP}"),ConsoleColor.Red);
                     break;
                 case EffectTypes.heal:
                     Vitals.ModifyCurrentHP(amount);
@@ -61,31 +67,47 @@ namespace Part_3_and_final.Monsters
             }
         public void targettedAction(IActor affectedActor, Ability ability)
         {
-            foreach (EffectTypes e in ability.Effects)
+            bool wasTextSent = false;
+            foreach (EffectTypes effect in ability.Effects)
             {
-                switch (e)
+                int damageModifier = ability.isMagicBased() ? Vitals.CurrentMagicAttack : Vitals.CurrentAttack;
+                damageModifier = (int)Math.Round(damageModifier * ability.scalingMultiplier);
+
+                if (!wasTextSent)
+                {
+                    string text = $"{Name}{ability.text}";
+                   Scribe.WriteRight(text);
+                }
+
+                switch (effect)
                 {
                     case EffectTypes.damage:
-                        Scribe.WriteLine(this.Name + ability.text);
-                        int damage = this.Vitals.CurrentAttack;
-                        affectedActor.TakeDamage(damage);
+                        int damage = ability.baseDamage + damageModifier;
+                        affectedActor.TakeEffectType(EffectTypes.damage, damage);
+                        this.Vitals.ModifyCurrentMana(-ability.manaCost);
                         break;
 
                     case EffectTypes.heal:
-                        Scribe.WriteLine(this.Name + ability.text);
-                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.reqLevel;
+                        int healing = ability.baseDamage + damageModifier;
                         this.TakeEffectType(EffectTypes.heal, healing);
+                        this.Vitals.ModifyCurrentMana(-ability.manaCost);
+                        break;
+
+                    case EffectTypes.DoT:
+                        Ability newAbility = AbilityFactory.CreateAbilityEffect(ability, this);
+                        affectedActor.GetVitals().addEffect(newAbility);
+                        this.Vitals.ModifyCurrentMana(-ability.manaCost);
+                        Console.WriteLine($"Added {ability.name} to {affectedActor.GetName()}'s effects.");
                         break;
                 }
 
-
+                wasTextSent = true;
             }
-
         }
 
         public void DisplayHP()
         {
-            Console.Write($"{Name} HP: {Vitals.CurrentHP}/{Vitals.BaseHP} ");
+            Scribe.WriteLineColor($"{Name} HP: {Vitals.CurrentHP}/{Vitals.BaseHP} ",ConsoleColor.DarkYellow);
         }
 
         public void SetHP(int value)
@@ -95,50 +117,56 @@ namespace Part_3_and_final.Monsters
 
         public void TakeTurn(Player player, List<Monster> monsters)
         {
-            foreach (Monster m in monsters) {
-                isAlive();
+            
+                if (!Abilities.Any()) return;              
+                int index = rand.Next(Abilities.Count);
+                Ability chosenAbility = Abilities[index];
+
+                targettedAction(player, chosenAbility);
+            
+        }
+        public void TurnStart()
+        {
+            //dots?
+            foreach (Ability ability in this.Vitals.Effects.ToList())
+            {
+                turnStartDot(ability, ability.baseDamage);
+
             }
-
-
         }
         public void turnStartDot(Ability ability, int amount)
         {
             foreach (EffectTypes e in ability.Effects)
             {
+                
                 switch (e)
                 {
                     case EffectTypes.damage:
                         Scribe.WriteLine(this.Name + $" took {amount} damage from " + ability.name);
-                        int damage = this.Vitals.CurrentAttack;
-                        this.TakeDamage(damage + (ability.reqLevel * Vitals.CurrentAttack));
+                        this.TakeDamage(amount); //calculate defenses here
                         break;
 
                     case EffectTypes.heal:
                         Scribe.WriteLine(this.Name + $" healed {amount} damage from " + ability.name);
-                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.reqLevel;
+                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.baseDamage;
                         this.TakeEffectType(EffectTypes.heal, healing);
                         break;
+                    
                 }
             }
         }
-        public void TurnStart(Vitals vitals)
-        {
-            foreach (Ability ability in vitals.Effects)
-            {
-                turnStartDot(ability,ability.reqLevel);
-            }
-        }
+        
     }
     public class Goblin:Monster
     {
         
-        public Goblin() : base("Goblin", "A small but nasty creature", new Vitals(25, 5, 5, 5, 0))
+        public Goblin() : base("Goblin", "A small but nasty creature", new Vitals(25, 5, 5,2,2, 5, 0))
         {
+            this.monsterArt = asciiMonsters.goblin;
+            this.basicAttackText = " lunges at you with a rusty dagger!";
+            Abilities.Clear();
 
-        }
-        public void SpecialAttack()
-        {
-            Console.WriteLine($"{Name} lunges at you with a rusty dagger!");
+            Abilities.Add(AbilityFactory.CreateAbility(AbilityNames.basicAttack,basicAttackText ));
         }
        
 
@@ -146,8 +174,13 @@ namespace Part_3_and_final.Monsters
     public class Wolf : Monster
     {
 
-        public Wolf(): base("Wolf","Not as cuddly as you thought", new Vitals(50, 8, 5, 10, 0))
+        public Wolf(): base("Wolf","Not as cuddly as you thought", new Vitals(50, 8, 5,1,4, 10, 0))
         {
+            this.monsterArt = asciiMonsters.wolf;
+            this.basicAttackText = " bites at your ankles!";
+            Abilities.Clear();
+
+            Abilities.Add(AbilityFactory.CreateAbility(AbilityNames.basicAttack, basicAttackText));
 
         }
         public void SpecialAttack()

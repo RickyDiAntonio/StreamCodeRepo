@@ -8,22 +8,29 @@ namespace Part_3_and_final
 {
     public class Ability
     {
-        //elements, manacosts
-        public string name { get; private set; }
-       
+        //elements,duration,casting time?? 
+        public string name { get; private set; }       
         public string text = "";
         public int reqLevel { get; }
         public int manaCost { get; private set; }
         public EffectTypes[] Effects { get; private set; }
+        public float scalingMultiplier { get; private set; }
+        public int baseDamage { get; private set; }
         
-        public Ability(string name, string text,int reqLevel,int manaCost =0,params EffectTypes[] extraEffects) { 
-            this.name = name;
+        public Ability(string name, string text,int baseDamage,int reqLevel, float scalingMultiplier, int manaCost =0,params EffectTypes[] extraEffects) { 
+            this.name = name;            
             this.text = text;
+            this.baseDamage = baseDamage;
             this.reqLevel = reqLevel;
             this.Effects = extraEffects ?? new EffectTypes[0];
+            this.scalingMultiplier = scalingMultiplier;
             this.manaCost = manaCost;
         }
-       
+        public bool isMagicBased()
+        {
+            if (this.Effects.Contains(EffectTypes.magic)) return true;
+            else return false;
+        }
 
     }
 }

@@ -12,26 +12,19 @@ namespace Part_3_and_final
         {
                                 public Vitals Vitals { get; private set; }
                                 public  string PlayerName { get; set; }
-                                public DestinyBase DestinyType { get; set; }
-                                public int HP { get; set; }
-                                public int Speed { get; set; }
-                                public int Attack { get; set; }
-                                public int Defense { get; set; }
-                                public int Mana { get; set; }
+                                public DestinyBase DestinyType { get; set; }                              
                                 public int Level { get; set; }
                                 public List<Ability> Abilities;
-
+        public int Experience { get; private set; } = 0;
+        public int ExperienceToNextLevel => Level * 100;
+        public int[] DestinySpread= new int[3];
 
         public Player(string Name,DestinyBase dest)
         {
-            Vitals = new Vitals(dest.startingHP, dest.startingAttack, dest.startingDefense, dest.startingSpeed, dest.startingMana);
+            Vitals = new Vitals(dest.startingHP, dest.startingAttack, dest.startingDefense,dest.startingMagicAttack,dest.startingMagicDefense, dest.startingSpeed, dest.startingMana);
             PlayerName = Name;
             DestinyType = dest;
-            HP = dest.startingHP;
-            Speed = dest.startingSpeed;
-            Attack = dest.startingAttack;
-            Defense = dest.startingDefense;
-            Mana = dest.startingMana;
+           
             Level = 1;
             Ability basicAttack = AbilityFactory.CreateAbility(AbilityNames.basicAttack);
             Abilities = new List<Ability>();
@@ -40,9 +33,24 @@ namespace Part_3_and_final
 
 
         }
-        public void Levelup(Player player)
+        public void GainExperience(int amount)
         {
+            Experience += amount;
+            Scribe.WriteLineColor($"{PlayerName} gains {amount} XP!", ConsoleColor.Green);
+            while (Experience >= ExperienceToNextLevel)
+            {
+                Experience -= ExperienceToNextLevel;
+                Levelup();
+            }
+        }
+        public void Levelup()
+        {
+            Level++;
+            Scribe.WriteLineColor($"{PlayerName} leveled up to {Level}!", ConsoleColor.Cyan);
+            DestinyType.ApplyLevelUpGrowth(Vitals);
 
+            Vitals.ResetCurrentStats();
+            AddAbilityList(DestinyType.getAbilitiesByLevel(Level));
         }
         private Monster? ChooseMonsterTarget(List<Monster> monsters)
         {
@@ -54,6 +62,7 @@ namespace Part_3_and_final
             {
                 var m = aliveMonsters[i];
                 Scribe.WriteLineColor($"{i + 1}. {m.Name} - {m.Vitals.CurrentHP}/{m.Vitals.BaseHP} HP", ConsoleColor.Yellow);
+                Scribe.WriteLine(m.monsterArt);
             }
             while (true)
             {
@@ -67,6 +76,10 @@ namespace Part_3_and_final
             } 
 
         }
+        public string GetName()
+        {
+            return PlayerName;
+        }
         public void AddAbility(Ability ability)
         {
             this.Abilities.Add(ability);
@@ -78,12 +91,13 @@ namespace Part_3_and_final
                this.Abilities.Add(a);
             }
         }
-        public void TurnStart(Vitals vitals)
+        public void TurnStart()
         {
-
-            foreach (Ability ability in vitals.Effects)
+            //dots?
+            foreach (Ability ability in this.Vitals.Effects.ToList())
             {
-                targettedAction(this, ability);
+                turnStartDot(ability, ability.baseDamage);
+
             }
         }
 
@@ -110,12 +124,16 @@ namespace Part_3_and_final
             {
                 case EffectTypes.damage:
                  Vitals.ModifyCurrentHP(-amount);
-                 Console.WriteLine($"{PlayerName} took {amount} damage, current HP: {Vitals.CurrentHP}/{Vitals.BaseHP}");
+                    Scribe.WriteRightColor($"{PlayerName} took {amount} damage, current HP: {Vitals.CurrentHP}/{Vitals.BaseHP}", ConsoleColor.DarkRed);
                     break;
                 case EffectTypes.heal:
                     Vitals.ModifyCurrentHP(amount);
                     Scribe.WriteLineColor($"{PlayerName} has been healed for {amount} HP, current HP:{Vitals.CurrentHP}/{Vitals.BaseHP}", ConsoleColor.Green);
                     break;
+                case EffectTypes.statChangeSpeed:
+                    Vitals.ModifyCurrentSpeed(amount);
+                    Scribe.WriteLineColor($"{PlayerName} has been slowed! speed reduced to {Vitals.CurrentSpeed}/{Vitals.BaseSpeed}" ,ConsoleColor.DarkMagenta);
+                    break;            
             }
         }
         public void Healing(int amount)
@@ -129,6 +147,8 @@ namespace Part_3_and_final
             Console.WriteLine($"Speed: {Vitals.CurrentSpeed}/{Vitals.BaseSpeed}");
             Console.WriteLine($"Attack: {Vitals.CurrentAttack}/{Vitals.BaseAttack}");
             Console.WriteLine($"Defense: {Vitals.CurrentDefense}/{Vitals.BaseDefense}");
+            Console.WriteLine($"Magic attack: {Vitals.CurrentMagicAttack}/{Vitals.BaseMagicAttack}");
+            Console.WriteLine($"Magic defense: {Vitals.CurrentMagicDefense}/{Vitals.BaseMagicDefense}");
             Console.WriteLine($"Mana: {Vitals.CurrentMana}/{Vitals.BaseMana}");
 
         }
@@ -147,7 +167,7 @@ namespace Part_3_and_final
         {
           
             Scribe.WriteColor($"{PlayerName} HP: { Vitals.CurrentHP}/{ Vitals.BaseHP}",ConsoleColor.Red);
-            Scribe.WriteLineColor($"MP: {Vitals.CurrentMana}/{Vitals.BaseMana}",ConsoleColor.Blue);
+            Scribe.WriteLineColor($" MP: {Vitals.CurrentMana}/{Vitals.BaseMana}",ConsoleColor.Blue);
         }
         public void SetHP(int value)
         {
@@ -162,74 +182,72 @@ namespace Part_3_and_final
                 Scribe.WriteLineColor("There are no valid targets to attack.", ConsoleColor.Yellow);
                 return;
             }
-                bool IsValidAction = false;
-            while (!IsValidAction)
+                bool isValidAction = false;
+            while (!isValidAction)
             {
-                ActionOptions(player.Abilities);
-                Ability chosenAbility;
+                ActionOptions(Abilities); // Show available actions
                 string? input = Console.ReadLine();
 
-                IsValidAction = int.TryParse(input, out int choice);
-
-                if ((!IsValidAction || choice < 1 || choice > Abilities.Count))
+                if (int.TryParse(input, out int choice)
+                    && choice >= 1 && choice <= Abilities.Count)
                 {
-                    Scribe.WriteLineColor("Invalid input.Try again",ConsoleColor.DarkRed);
+                    Ability chosenAbility = Abilities[choice - 1];
+
+                    if (chosenAbility.manaCost > Vitals.CurrentMana)
+                    {
+                        Scribe.WriteLineColor("Not enough mana. Try another move.", ConsoleColor.Red);
+                        continue;
+                    }
+
+                    Console.Clear();
+                    player.targettedAction(target, chosenAbility);
+                    isValidAction = true;
                 }
                 else
                 {
-                    chosenAbility = Abilities[choice - 1];
-                    switch (input)
-                    {
-                        //want to call the text and then have the ability happen. so we want text since the text is decided here
-                        case "1":
-                            player.targettedAction(target, chosenAbility);
-                            break;
-                        case "2":
-                            player.targettedAction(target, chosenAbility);
-                            break;
-                        case "3":
-                            player.targettedAction(target, chosenAbility);
-                            break;
-                        case "4":
-                            player.targettedAction(target,chosenAbility);
-                            break;
-
-                    }
-                    
+                    Scribe.WriteLineColor("Invalid input. Try again.", ConsoleColor.DarkRed);
                 }
+
+            }
 
             }
             
             
 
-        }
+        
         public void targettedAction(IActor affectedActor,Ability ability)
         {
+            
+
+            bool wasTextSent = false;
             foreach (EffectTypes effect in ability.Effects)
             {
-                Scribe.WriteLine("Ability Type: " + effect.ToString());
+                int damageModifier = ability.isMagicBased() ? Vitals.CurrentMagicAttack : Vitals.CurrentAttack;
+                damageModifier=(int)Math.Round(damageModifier*ability.scalingMultiplier);
+
                 switch (effect)
-                {
+                {                                 
                     case EffectTypes.damage:
-                        Scribe.WriteLine(PlayerName + ability.text);
-                        int damage = this.Vitals.CurrentAttack;
-                        affectedActor.TakeEffectType(EffectTypes.damage, damage + (ability.reqLevel * Vitals.CurrentAttack));
+                        if (!wasTextSent) { Scribe.WriteLine(PlayerName + ability.text); }
+                        int damage = ability.baseDamage +damageModifier;
+                        affectedActor.TakeEffectType(EffectTypes.damage, damage );//calc defense here
                         this.Vitals.ModifyCurrentMana(-ability.manaCost);
                         break;
                     case EffectTypes.heal:
-                        Scribe.WriteLine(PlayerName + ability.text);
-                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.reqLevel;
+                        if (!wasTextSent) { Scribe.WriteLine(PlayerName + ability.text); }
+                        int healing = ability.baseDamage + damageModifier;
                         this.TakeEffectType(EffectTypes.heal, healing);
                         this.Vitals.ModifyCurrentMana(-ability.manaCost);
                         break;
                     case EffectTypes.DoT:
-                        Scribe.WriteLine(PlayerName + ability.text);
-                        affectedActor.TakeEffectType(EffectTypes.DoT, this.Vitals.CurrentAttack * ability.reqLevel);
+                        if (!wasTextSent) { Scribe.WriteLine(PlayerName + ability.text); }
+                        Ability newAbility = AbilityFactory.CreateAbilityEffect(ability, this);                        
                         affectedActor.GetVitals().addEffect(ability);
+                        Console.WriteLine($"Added {ability.name} to {affectedActor.GetName()}'s effects.");
                         this.Vitals.ModifyCurrentMana(-ability.manaCost);
                         break;
-
                 }
+                wasTextSent = true;
             }
            
             
@@ -243,13 +261,15 @@ namespace Part_3_and_final
                     case EffectTypes.damage:
                         Scribe.WriteLine(this.PlayerName + $" took {amount} damage from " + ability.name);
                         int damage = this.Vitals.CurrentAttack;
-                        this.TakeDamage(damage + (ability.reqLevel * Vitals.CurrentAttack));
+                        this.TakeDamage(damage + (ability.baseDamage * Vitals.CurrentAttack));
                         break;
 
                     case EffectTypes.heal:
                         Scribe.WriteLine(this.PlayerName + $" healed {amount} damage from " + ability.name);
-                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.reqLevel;
+                        int healing = this.Vitals.CurrentAttack + this.Vitals.CurrentAttack * ability.baseDamage;
                         this.TakeEffectType(EffectTypes.heal, healing);
+                        break;
+                    case EffectTypes.shield:
                         break;
                 }
             }

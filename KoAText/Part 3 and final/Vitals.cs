@@ -8,13 +8,13 @@ namespace Part_3_and_final
 {
     public class Vitals
     {
-        public int BaseHP { get; private set; }
-        public int BaseSpeed { get; private set; }
-        public int BaseAttack { get; private set; }
-        public int BaseDefense { get; private set; }
-        public int BaseMagicAttack { get; private set; }
-        public int BaseMagicDefense { get; private set; }
-        public int BaseMana { get; private set; }
+        public int BaseHP { get;  set; }
+        public int BaseSpeed { get;  set; }
+        public int BaseAttack { get;  set; }
+        public int BaseDefense { get;  set; }
+        public int BaseMagicAttack { get;  set; }
+        public int BaseMagicDefense { get;  set; }
+        public int BaseMana { get;  set; }
         public bool _isTargetable { get; set; }
         public List<Ability> Effects { get; private set; } = new List<Ability>();
 
@@ -39,26 +39,22 @@ namespace Part_3_and_final
         private int _currentMagicAttack;
         private int _currentMagicDefense;
         private int _currentMana;
-
         // Properties with clamped private setters
         public int CurrentHP
         {
             get => _currentHP;
             private set => _currentHP = Math.Clamp(value, 0, BaseHP);
         }
-
         public int CurrentSpeed
         {
             get => _currentSpeed;
             private set => _currentSpeed = Math.Max(0, value);
         }
-
         public int CurrentAttack
         {
             get => _currentAttack;
             private set => _currentAttack = Math.Max(0, value);
         }
-
         public int CurrentDefense
         {
             get => _currentDefense;
@@ -74,24 +70,13 @@ namespace Part_3_and_final
             get => _currentMagicDefense;
             private set => _currentMagicDefense = Math.Max(0, value);
         }
-
         public int CurrentMana
         {
             get => _currentMana;
             private set => _currentMana = Math.Clamp(value, 0, BaseMana);
         }
 
-        // Constructor to set base stats
-        public Vitals(int baseHP, int baseAttack, int baseDefense, int baseSpeed, int baseMana)
-        {
-            BaseHP = baseHP;
-            BaseAttack = baseAttack;
-            BaseDefense = baseDefense;
-            BaseSpeed = baseSpeed;
-            BaseMana = baseMana;
-            _isTargetable = true;
-            ResetCurrentStats();
-        }
+  
 
         //Modify stats
         public void addEffect(Ability ability)=> Effects.Add(ability);
@@ -115,9 +100,10 @@ namespace Part_3_and_final
             CurrentSpeed = BaseSpeed;
             CurrentAttack = BaseAttack;
             CurrentDefense = BaseDefense;
+            CurrentMagicAttack = BaseMagicAttack;
+            CurrentMagicDefense = BaseMagicDefense;
             CurrentMana = BaseMana;
             _isTargetable = true;
-            Effects.Clear();
         }
     }
 }

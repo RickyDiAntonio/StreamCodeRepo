@@ -20,9 +20,7 @@ namespace Part_3_and_final
         {
             encounterMonsters = new MonsterFactory();
             _player = player;
-            _monsters = GenerateMonsters(types);
-                       
-            
+            _monsters = GenerateMonsters(types);                     
         }
         private List<Monster> GenerateMonsters(params MonsterTypes[] types)
         {
@@ -41,56 +39,6 @@ namespace Part_3_and_final
             battle.StartBattle();
            
             
-        }
-        private void DisplayStatus(int turnNumber)
-        {
-            string turnText = $"----Turn {turnNumber}----";
-            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
-            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (turnText.Length / 2)) + "}", turnText));
-            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
-            _player.DisplayHP();
-            Console.WriteLine("Foes:");
-            foreach (var m in _monsters)
-            {
-                Console.WriteLine($"{m.Name}: {m.Vitals.CurrentHP}/{m.Vitals.BaseHP} HP");
-            }
-            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
-            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (asciiDrawing.line.Length / 2)) + "}", asciiDrawing.line));
-
-        }
-       
-      
-        //chooseTarget always returns player for monsters, putting here if we want to make a party later
-        private IActor ChooseTarget()
-        {
-            return _player;
-        }
-        private Monster? ChooseMonsterTarget()
-        {
-            var target = _monsters.First(m => m.Vitals.CurrentHP > 0);
-            if (target == null)
-            {
-                EndOfTurns();
-            }
-
-            //auto targetting the first monster who is alive for now
-                        return target;
-        }
-        private bool DoesPlayerActFirst()
-        {
-            foreach (Monster monster in _monsters.Where(m => m.isAlive()))
-            {
-                if (monster.Vitals.CurrentSpeed > _player.Vitals.CurrentSpeed)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private void EndOfTurns()
-        {
-
         }
     }
 }
